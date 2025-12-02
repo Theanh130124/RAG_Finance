@@ -5,7 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
-
+app/oauth_config.json
 # Distribution / packaging
 .Python
 build/

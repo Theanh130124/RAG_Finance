@@ -1,0 +1,159 @@
+{% extends "layout/base_login.html" %}
+
+{% block title %}Đăng Nhập - Hệ Thống Tư Vấn Tài Chính{% endblock %}
+
+{% block additional_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <!-- Header -->
+        <div class="auth-header">
+            <a href="{{ url_for('register') }}" class="btn btn-register">
+                <i class="fas fa-user-plus me-2"></i> Đăng ký
+            </a>
+            <div class="auth-title-group">
+                <h1 class="auth-title">ĐĂNG NHẬP</h1>
+                <p class="auth-subtitle">Hệ Thống Tư Vấn Tài Chính Thông Minh</p>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <form method="post" action="/login" class="auth-form">
+            {{ form.csrf_token }}
+
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-user me-2"></i>Tên đăng nhập
+                </label>
+                {{ form.username(class="form-control", placeholder="Nhập tên đăng nhập") }}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-lock me-2"></i>Mật khẩu
+                </label>
+                <div class="password-input-group">
+                    {{ form.password(class="form-control", placeholder="Nhập mật khẩu", id="password") }}
+                    <button type="button" class="toggle-password" aria-label="Hiển thị mật khẩu">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="form-hint" id="warning-caps-lock" hidden>
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Caps Lock đang bật
+                </div>
+            </div>
+
+            <div class="form-options">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="rememberMe">
+                    <label class="form-check-label" for="rememberMe">Ghi nhớ đăng nhập</label>
+                </div>
+                <a href="/forgot-password" class="forgot-password">Quên mật khẩu?</a>
+            </div>
+
+            {% if mse %}
+            <div class="alert alert-danger auth-alert" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                {{ mse }}
+            </div>
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary btn-auth w-100">
+                <i class="fas fa-sign-in-alt me-2"></i>
+                {{ form.SubmitFieldLogin.label }}
+            </button>
+
+            <!-- Social Login -->
+            <div class="social-divider">
+                <span>Hoặc đăng nhập với</span>
+            </div>
+
+            <a href="{{ url_for('login_oauth') }}" class="btn btn-google w-100">
+                <i class="fab fa-google me-2"></i>
+                Google
+            </a>
+        </form>
+
+        <!-- Footer -->
+        <div class="auth-footer">
+            <p class="footer-text">
+                Chưa có tài khoản?
+                <a href="{{ url_for('register') }}" class="auth-link">Đăng ký ngay</a>
+            </p>
+            <div class="support-info">
+                <p>Nếu bạn là chuyên gia tài chính chưa có tài khoản?</p>
+                <a href="https://hotro.ou.edu.vn" class="support-link">
+                    <i class="fas fa-headset me-2"></i>Liên hệ hỗ trợ
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+        <div class="welcome-content">
+            <h2>Chào mừng đến với</h2>
+            <h1>Hệ Thống Tư Vấn Tài Chính</h1>
+            <div class="features-list">
+                <div class="feature-item">
+                    <i class="fas fa-robot"></i>
+                    <span>Chatbot AI thông minh</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Chuyên gia tài chính</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-piggy-bank"></i>
+                    <span>Quản lý chi tiêu</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Bảo mật tuyệt đối</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Password visibility toggle
+    const togglePassword = document.querySelector('.toggle-password');
+    const passwordInput = document.getElementById('password');
+
+    if (togglePassword && passwordInput) {
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        });
+    }
+
+    // Caps Lock warning
+    if (passwordInput) {
+        passwordInput.addEventListener('keyup', function(event) {
+            const warning = document.getElementById('warning-caps-lock');
+            if (event.getModifierState('CapsLock')) {
+                warning.removeAttribute('hidden');
+            } else {
+                warning.setAttribute('hidden', 'true');
+            }
+        });
+    }
+
+    // Auto dismiss alert
+    const alert = document.querySelector('.auth-alert');
+    if (alert) {
+        setTimeout(() => {
+            alert.style.opacity = '0';
+            setTimeout(() => alert.remove(), 300);
+        }, 5000);
+    }
+});
+</script>
+{% endblock %}

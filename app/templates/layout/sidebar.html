@@ -1,0 +1,58 @@
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-content">
+        <ul class="nav nav-pills flex-column">
+            <li class="nav-item">
+                <a href="/home" class="nav-link align-middle {{ 'active' if request.path == '/home' }}">
+                    <i class="fas fa-home"></i>
+                    <span>Trang chủ</span>
+                </a>
+            </li>
+
+            {% if current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a href="/chatbot" class="nav-link align-middle {{ 'active' if request.path == '/chatbot' }}">
+                        <i class="fas fa-robot"></i>
+                        <span>Chatbot Tư Vấn</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="/map" class="nav-link align-middle {{ 'active' if request.path == '/map' }}">
+                        <i class="fas fa-map"></i>
+                        <span>Bệnh viện da liễu gần nhất</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="/profile" class="nav-link align-middle {{ 'active' if request.path == '/profile' }}">
+                        <i class="fas fa-user"></i>
+                        <span>Hồ sơ cá nhân</span>
+                    </a>
+                </li>
+
+                 <li class="nav-item">
+                    <a href="/posts" class="nav-link align-middle {{ 'active' if request.path == '/posts' }}">
+                        <i class="fas fa-comments"></i>
+                        <span>Diễn đàn bài viết</span>
+                    </a>
+                </li>
+
+                {% if current_user.role.name == 'ADMIN' %}
+                <li class="nav-item">
+                    <a href="/admin" class="nav-link align-middle {{ 'active' if request.path == '/admin' }}">
+                        <i class="fas fa-cog"></i>
+                        <span>Quản lý hệ thống</span>
+                    </a>
+                </li>
+                {% endif %}
+            {% endif %}
+
+            <li class="nav-item">
+                <a href="/about" class="nav-link align-middle {{ 'active' if request.path == '/about' }}">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Về Chúng Tôi</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

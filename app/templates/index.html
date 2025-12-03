@@ -1,0 +1,633 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Trang Chủ - Hệ Thống Tư Vấn Tài Chính Thông Minh{% endblock %}
+
+{% block additional_css %}
+<style>
+.hero-section {
+    background: linear-gradient(135deg, #2196F3, #0D47A1);
+    color: white;
+    padding: 80px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #ffffff, #E3F2FD);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+}
+
+.hero-subtitle {
+    font-size: 1.3rem;
+    margin-bottom: 2.5rem;
+    opacity: 0.9;
+    line-height: 1.6;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.hero-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    transform: perspective(1000px) rotateY(-5deg);
+    transition: all 0.3s ease;
+}
+
+.hero-img:hover {
+    transform: perspective(1000px) rotateY(0deg);
+}
+
+/* Features Section */
+.features-section {
+    padding: 80px 0;
+    background: var(--bg-secondary);
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 3rem;
+    color: var(--text-primary);
+}
+
+.feature-card {
+    background: var(--bg-primary);
+    border-radius: 20px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-xl);
+}
+
+.feature-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2196F3, #0D47A1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    color: white;
+    font-size: 2rem;
+}
+
+.feature-card h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.feature-card p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Chatbot Preview */
+.chatbot-preview {
+    padding: 80px 0;
+    background: var(--bg-primary);
+}
+
+.chat-demo {
+    background: var(--bg-primary);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: var(--shadow-xl);
+    border: 1px solid var(--border-color);
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.chat-header-demo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.chat-avatar-demo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2196F3, #0D47A1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.chat-info-demo h4 {
+    margin: 0;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.chat-info-demo .status {
+    font-size: 0.9rem;
+    color: var(--success-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.message-demo {
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 0.75rem;
+}
+
+.message-demo.bot {
+    align-items: flex-start;
+}
+
+.message-demo.user {
+    align-items: flex-end;
+    flex-direction: row-reverse;
+}
+
+.message-avatar-demo {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.message-demo.user .message-avatar-demo {
+    background: linear-gradient(135deg, #2196F3, #0D47A1);
+    color: white;
+}
+
+.message-bubble-demo {
+    padding: 1rem 1.25rem;
+    border-radius: 18px;
+    max-width: 70%;
+    line-height: 1.4;
+}
+
+.message-demo.bot .message-bubble-demo {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border-bottom-left-radius: 4px;
+}
+
+.message-demo.user .message-bubble-demo {
+    background: linear-gradient(135deg, #2196F3, #0D47A1);
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+
+/* Stats Section */
+.stats-section {
+    padding: 60px 0;
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    color: white;
+}
+
+.stat-card {
+    text-align: center;
+    padding: 2rem;
+}
+
+.stat-number {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #2196F3, #0D47A1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stat-label {
+    font-size: 1.1rem;
+    opacity: 0.8;
+}
+
+/* CTA Section */
+.cta-section {
+    padding: 80px 0;
+    background: var(--bg-secondary);
+    text-align: center;
+}
+
+.cta-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.cta-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.cta-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
+
+/* Financial Colors */
+.text-financial {
+    color: #2196F3;
+}
+
+.bg-financial {
+    background-color: #E3F2FD;
+}
+
+.border-financial {
+    border-color: #2196F3;
+}
+
+.btn-financial {
+    background: linear-gradient(135deg, #2196F3, #0D47A1);
+    color: white;
+    border: none;
+}
+
+.btn-financial:hover {
+    background: linear-gradient(135deg, #0D47A1, #2196F3);
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+
+    .hero-buttons {
+        justify-content: center;
+    }
+
+    .section-title {
+        font-size: 2rem;
+    }
+
+    .feature-card {
+        padding: 2rem;
+    }
+
+    .cta-title {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-section {
+        padding: 60px 0;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .features-section,
+    .chatbot-preview,
+    .cta-section {
+        padding: 60px 0;
+    }
+
+    .hero-buttons .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="hero-content">
+                    <h1 class="hero-title">Tư Vấn Tài Chính Thông Minh</h1>
+                    <p class="hero-subtitle">
+                        Quản lý tài chính thông minh với chatbot AI và đội ngũ chuyên gia giàu kinh nghiệm.
+                        Lập kế hoạch tài chính, đầu tư thông minh, và đạt được mục tiêu tài chính của bạn.
+                    </p>
+                    <div class="hero-buttons">
+                        {% if current_user.is_authenticated %}
+                        <a href="/chatbot" class="btn btn-light btn-lg px-4 py-3 fw-semibold">
+                            <i class="fas fa-robot me-2"></i>Bắt Đầu Tư Vấn
+                        </a>
+                        <a href="/dashboard" class="btn btn-outline-light btn-lg px-4 py-3">
+                            <i class="fas fa-chart-line me-2"></i>Bảng Điều Khiển
+                        </a>
+                        {% else %}
+                        <a href="/login" class="btn btn-light btn-lg px-4 py-3 fw-semibold">
+                            <i class="fas fa-sign-in-alt me-2"></i>Đăng Nhập
+                        </a>
+                        <a href="/register" class="btn btn-outline-light btn-lg px-4 py-3">
+                            <i class="fas fa-user-plus me-2"></i>Đăng Ký
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="text-center">
+                    <img src="https://res.cloudinary.com/dxiawzgnz/image/upload/v1758539397/login-banner_kryd5t.png"
+                         alt="Tư vấn tài chính thông minh" class="hero-img">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <h2 class="section-title">Giải Pháp Tài Chính Toàn Diện</h2>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>Chatbot AI Tài Chính</h3>
+                    <p>
+                        Tư vấn 24/7 với chatbot thông minh về quản lý tài chính,
+                        đầu tư, tiết kiệm và lập kế hoạch tài chính cá nhân.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Chuyên Gia Tài Chính</h3>
+                    <p>
+                        Đội ngũ chuyên gia tài chính giàu kinh nghiệm, sẵn sàng tư vấn
+                        và hỗ trợ các quyết định tài chính quan trọng.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-piggy-bank"></i>
+                    </div>
+                    <h3>Quản Lý Ngân Sách</h3>
+                    <p>
+                        Theo dõi thu chi, lập ngân sách thông minh và kiểm soát
+                        tài chính cá nhân hiệu quả.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3>Lập Mục Tiêu Tài Chính</h3>
+                    <p>
+                        Đặt mục tiêu tài chính rõ ràng và theo dõi tiến độ
+                        đạt được các mục tiêu dài hạn của bạn.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <h3>Đầu Tư Thông Minh</h3>
+                    <p>
+                        Tư vấn đầu tư phù hợp với hồ sơ rủi ro và mục tiêu
+                        tài chính cá nhân của bạn.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Bảo Mật Tuyệt Đối</h3>
+                    <p>
+                        Thông tin tài chính và dữ liệu cá nhân được mã hóa
+                        và bảo mật theo tiêu chuẩn cao nhất.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card">
+                    <div class="stat-number">15,000+</div>
+                    <div class="stat-label">Người Dùng Tin Tưởng</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card">
+                    <div class="stat-number">100+</div>
+                    <div class="stat-label">Chuyên Gia Tài Chính</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Hỗ Trợ Tư Vấn</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">Hài Lòng Dịch Vụ</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Chatbot Preview Section -->
+<section class="chatbot-preview">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h2 class="section-title text-start">Trải Nghiệm Chatbot Tài Chính</h2>
+                <p class="lead mb-4">
+                    Chatbot của chúng tôi có thể giúp bạn với đa dạng vấn đề tài chính:
+                </p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Lập ngân sách cá nhân
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Quản lý chi tiêu hiệu quả
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Tiết kiệm thông minh
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Đầu tư chứng khoán
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Bảo hiểm & hưu trí
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Quản lý nợ & tín dụng
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Lập kế hoạch tài chính
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Phân tích rủi ro đầu tư
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                {% if current_user.is_authenticated %}
+                <a href="/chatbot" class="btn btn-primary btn-lg mt-4 px-4 py-3">
+                    <i class="fas fa-robot me-2"></i>Trò Chuyện Ngay
+                </a>
+                {% else %}
+                <a href="/register" class="btn btn-primary btn-lg mt-4 px-4 py-3">
+                    <i class="fas fa-user-plus me-2"></i>Đăng Ký Để Dùng Thử
+                </a>
+                {% endif %}
+            </div>
+            <div class="col-lg-6">
+                <div class="chat-demo">
+                    <div class="chat-header-demo">
+                        <div class="chat-avatar-demo">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="chat-info-demo">
+                            <h4>Chatbot Tài Chính</h4>
+                            <span class="status">
+                                <i class="fas fa-circle"></i>
+                                Đang trực tuyến
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="message-demo bot">
+                        <div class="message-avatar-demo">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="message-bubble-demo">
+                            Xin chào! Tôi có thể giúp gì cho vấn đề tài chính của bạn?
+                        </div>
+                    </div>
+
+                    <div class="message-demo user">
+                        <div class="message-avatar-demo">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="message-bubble-demo">
+                            Tôi muốn tiết kiệm để mua nhà trong 5 năm, phải làm sao?
+                        </div>
+                    </div>
+
+                    <div class="message-demo bot">
+                        <div class="message-avatar-demo">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="message-bubble-demo">
+                            Tốt lắm! Hãy chia sẻ thu nhập hiện tại và số tiền bạn muốn tiết kiệm. Tôi sẽ giúp bạn lập kế hoạch...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2 class="cta-title">Sẵn Sàng Quản Lý Tài Chính Thông Minh?</h2>
+            <p class="cta-subtitle">
+                Tham gia cùng hàng ngàn người dùng đã đạt được tự do tài chính.
+                Bắt đầu hành trình quản lý tài chính thông minh ngay hôm nay.
+            </p>
+            <div class="cta-buttons">
+                {% if current_user.is_authenticated %}
+                <a href="/chatbot" class="btn btn-primary btn-lg px-5 py-3 me-3">
+                    <i class="fas fa-robot me-2"></i>Bắt Đầu Tư Vấn
+                </a>
+                <a href="/dashboard" class="btn btn-outline-primary btn-lg px-5 py-3">
+                    <i class="fas fa-chart-line me-2"></i>Bảng Điều Khiển
+                </a>
+                {% else %}
+                <a href="/register" class="btn btn-primary btn-lg px-5 py-3 me-3">
+                    <i class="fas fa-user-plus me-2"></i>Đăng Ký Ngay
+                </a>
+                <a href="/about" class="btn btn-outline-primary btn-lg px-5 py-3">
+                    <i class="fas fa-info-circle me-2"></i>Tìm Hiểu Thêm
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -6,7 +6,7 @@ from app.dao import dao_authen
 
 
 def create_user_with_role(username, email, password, first_name, last_name,
-                          phone_number, address, date_of_birth=None,
+                          phone_number, address, date_of_birth=None, occupation=None, monthly_income=None,
                           gender=None, role=RoleEnum.USER):
     # Kiểm tra trùng
     if dao_authen.check_username_exists(username) or dao_authen.check_email_exists(
@@ -24,6 +24,8 @@ def create_user_with_role(username, email, password, first_name, last_name,
         phone_number=phone_number,
         address=address,
         date_of_birth=date_of_birth,
+        occupation=occupation,
+        monthly_income=monthly_income,
         gender=gender,
         role=role,
         is_active=True

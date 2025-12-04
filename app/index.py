@@ -30,7 +30,12 @@ app.add_url_rule("/callback" , 'oauth_callback', controllers.oauth_callback)
 # app.add_url_rule("/chatbot", "chatbot", controllers.chatbot)
 app.add_url_rule("/profile", "profile", controllers.profile, methods=['GET', 'POST'])
 # app.add_url_rule("/about", "about", controllers.about)
-
+# Thêm các route cho chứng khoán
+app.add_url_rule("/stocks", "stocks", controllers.stocks)
+app.add_url_rule("/api/stocks/search", "search_stocks", controllers.search_stocks, methods=['GET'])
+app.add_url_rule("/api/stocks/market-indices", "get_market_indices", controllers.get_market_indices, methods=['GET'])
+app.add_url_rule("/api/stocks/top-gainers", "get_top_gainers", controllers.get_top_gainers, methods=['GET'])
+app.add_url_rule("/api/stocks/top-losers", "get_top_losers", controllers.get_top_losers, methods=['GET'])
 
 
 if __name__ == '__main__':

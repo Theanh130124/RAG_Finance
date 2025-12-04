@@ -15,11 +15,11 @@
                         <span>Chatbot Tư Vấn</span>
                     </a>
                 </li>
-
+                <!-- Thêm sau phần Chatbot Tư Vấn -->
                 <li class="nav-item">
-                    <a href="/map" class="nav-link align-middle {{ 'active' if request.path == '/map' }}">
-                        <i class="fas fa-map"></i>
-                        <span>Bệnh viện da liễu gần nhất</span>
+                    <a href="/stocks" class="nav-link align-middle {{ 'active' if request.path == '/stocks' }}">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Thị trường chứng khoán</span>
                     </a>
                 </li>
 
@@ -30,12 +30,6 @@
                     </a>
                 </li>
 
-                 <li class="nav-item">
-                    <a href="/posts" class="nav-link align-middle {{ 'active' if request.path == '/posts' }}">
-                        <i class="fas fa-comments"></i>
-                        <span>Diễn đàn bài viết</span>
-                    </a>
-                </li>
 
                 {% if current_user.role.name == 'ADMIN' %}
                 <li class="nav-item">

@@ -1,0 +1,762 @@
+/* stocks.css - Phiên bản nâng cấp */
+
+.stocks-container {
+    padding: 25px;
+    max-width: 1400px;
+    margin: 0 auto;
+    min-height: calc(100vh - 140px);
+}
+
+/* Hero Header với gradient đặc biệt */
+.stocks-hero {
+    background: linear-gradient(135deg,
+        rgba(30, 136, 229, 0.9) 0%,
+        rgba(13, 71, 161, 0.9) 50%,
+        rgba(25, 118, 210, 0.8) 100%),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100"><path d="M0,100 Q250,50 500,100 T1000,100 L1000,0 L0,0 Z" fill="white" opacity="0.1"/></svg>');
+    background-size: cover;
+    color: white;
+    padding: 40px 35px;
+    border-radius: 20px;
+    margin-bottom: 35px;
+    box-shadow: 0 15px 35px rgba(30, 136, 229, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.stocks-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
+    z-index: 1;
+}
+
+.stocks-hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.stocks-hero h1 {
+    font-weight: 700;
+    margin-bottom: 25px;
+    font-size: 2.5rem;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    background: linear-gradient(135deg, #ffffff, #E3F2FD);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stocks-search-container {
+    max-width: 700px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.search-box {
+    position: relative;
+}
+
+.search-box .input-group {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.search-box .form-control {
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    padding: 15px 20px;
+    font-size: 1.1rem;
+    color: #1a237e;
+    border-radius: 12px 0 0 12px;
+}
+
+.search-box .form-control:focus {
+    background: white;
+    box-shadow: none;
+}
+
+.search-box .btn-primary {
+    background: linear-gradient(135deg, #2196F3, #0D47A1);
+    border: none;
+    padding: 15px 30px;
+    font-weight: 600;
+    border-radius: 0 12px 12px 0;
+    transition: all 0.3s ease;
+}
+
+.search-box .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
+}
+
+.search-hint {
+    margin-top: 15px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-hint i {
+    color: #FFD700;
+}
+
+/* Market Indices - Card nâng cao */
+.indices-section {
+    margin-bottom: 35px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.section-header h2 {
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 1.6rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+}
+
+.section-header h2 i {
+    color: var(--primary-color);
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.refresh-btn {
+    background: var(--bg-primary);
+    border: 2px solid var(--border-color);
+    color: var(--text-secondary);
+    border-radius: 10px;
+    padding: 8px 15px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.refresh-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.indices-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.index-card {
+    background: var(--bg-primary);
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+.index-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.index-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+}
+
+.index-card:hover::before {
+    opacity: 1;
+}
+
+.index-card.positive {
+    border-top: 4px solid #10b981;
+}
+
+.index-card.negative {
+    border-top: 4px solid #ef4444;
+}
+
+.index-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.index-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+}
+
+.index-symbol {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    background: var(--bg-secondary);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.index-value {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 10px 0;
+    line-height: 1;
+}
+
+.index-change {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 8px 15px;
+    border-radius: 25px;
+    background: var(--bg-secondary);
+    width: fit-content;
+}
+
+.index-change.positive {
+    color: #10b981;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+}
+
+.index-change.negative {
+    color: #ef4444;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+}
+
+.index-change i {
+    font-size: 0.9rem;
+}
+
+/* Stock Info Card - Nâng cấp */
+.stock-info-section {
+    margin: 35px 0;
+}
+
+.stock-info-card {
+    background: var(--bg-primary);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
+    animation: slideInUp 0.5s ease;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stock-info-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 30px;
+    position: relative;
+    overflow: hidden;
+}
+
+.stock-info-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+}
+
+.stock-header-content {
+    position: relative;
+    z-index: 2;
+}
+
+.stock-symbol {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+}
+
+.stock-name {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 20px;
+}
+
+.stock-price-container {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.stock-price {
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.stock-change {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+}
+
+.stock-change.positive {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+}
+
+.stock-change.negative {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.stock-info-body {
+    padding: 30px;
+}
+
+.stock-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.detail-item {
+    background: var(--bg-secondary);
+    border-radius: 15px;
+    padding: 20px;
+    transition: transform 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.detail-item:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.detail-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.detail-label i {
+    color: var(--primary-color);
+}
+
+.detail-value {
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 1.2rem;
+}
+
+/* Top Stocks Tables - Nâng cấp */
+.top-stocks-section {
+    margin: 35px 0;
+}
+
+.stocks-table-container {
+    background: var(--bg-primary);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+}
+
+.table-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 20px 25px;
+}
+
+.table-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.table-header h3 i {
+    font-size: 1.1rem;
+}
+
+.stocks-table {
+    margin: 0;
+}
+
+.stocks-table thead th {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-weight: 600;
+    border-bottom: 2px solid var(--border-color);
+    padding: 18px 20px;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stocks-table tbody tr {
+    transition: all 0.3s ease;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.stocks-table tbody tr:hover {
+    background: var(--bg-secondary);
+    transform: translateX(5px);
+}
+
+.stocks-table tbody td {
+    padding: 18px 20px;
+    vertical-align: middle;
+    color: var(--text-primary);
+}
+
+.symbol-cell {
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+}
+
+.price-cell {
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.change-cell {
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.change-cell.positive {
+    color: #10b981;
+}
+
+.change-cell.negative {
+    color: #ef4444;
+}
+
+/* Info Cards Section - Phong cách hiện đại */
+.info-section-modern {
+    margin: 40px 0;
+}
+
+.info-section-modern .info-card {
+    background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+    border-radius: 20px;
+    padding: 30px;
+    height: 100%;
+    border: 1px solid var(--border-color);
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+.info-section-modern .info-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.info-section-modern .info-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-xl);
+}
+
+.info-section-modern .info-card:hover::before {
+    opacity: 1;
+}
+
+.info-section-modern .info-card i {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.info-section-modern .info-card h5 {
+    color: var(--text-primary);
+    font-weight: 700;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+}
+
+.info-section-modern .info-card p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+/* Market Stats Widget */
+.market-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin: 30px 0;
+}
+
+.stat-widget {
+    background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s ease;
+}
+
+.stat-widget:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+    line-height: 1;
+}
+
+.stat-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Loading Animation */
+.loading-container {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border: 3px solid var(--border-color);
+    border-radius: 50%;
+    border-top-color: var(--primary-color);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Error States */
+.error-state {
+    background: linear-gradient(135deg, #ffebee, #ffcdd2);
+    border: 2px solid #ef4444;
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.error-state i {
+    font-size: 3rem;
+    color: #ef4444;
+    margin-bottom: 20px;
+}
+
+.error-state h3 {
+    color: #b71c1c;
+    margin-bottom: 10px;
+}
+
+.error-state p {
+    color: #d32f2f;
+    margin-bottom: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .stocks-hero h1 {
+        font-size: 2rem;
+    }
+
+    .stock-price {
+        font-size: 2.5rem;
+    }
+
+    .indices-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .stocks-container {
+        padding: 15px;
+    }
+
+    .stocks-hero {
+        padding: 25px 20px;
+        border-radius: 15px;
+    }
+
+    .stocks-hero h1 {
+        font-size: 1.8rem;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .stock-price-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .stock-details-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .stocks-hero h1 {
+        font-size: 1.5rem;
+    }
+
+    .search-box .btn-primary {
+        padding: 15px 20px;
+    }
+
+    .index-value {
+        font-size: 1.8rem;
+    }
+
+    .stock-symbol {
+        font-size: 2rem;
+    }
+
+    .stock-price {
+        font-size: 2rem;
+    }
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .index-card,
+[data-theme="dark"] .stock-info-card,
+[data-theme="dark"] .stocks-table-container,
+[data-theme="dark"] .info-section-modern .info-card {
+    background: var(--bg-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .search-box .form-control {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+[data-theme="dark"] .search-box .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="dark"] .detail-item {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Animation cho market indices */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+.index-card.updated {
+    animation: pulse 0.5s ease;
+}
+
+/* Chart container styling */
+.chart-container {
+    background: var(--bg-primary);
+    border-radius: 18px;
+    padding: 25px;
+    margin-top: 30px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.chart-container h4 {
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chart-container h4 i {
+    color: var(--primary-color);
+}
+

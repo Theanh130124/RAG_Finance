@@ -1,0 +1,297 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Thị trường chứng khoán - HỆ THỐNG TƯ VẤN{% endblock %}
+
+{% block additional_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/stocks.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/realtime-chart.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="stocks-container">
+    <!-- Hero Header -->
+    <div class="stocks-hero">
+        <div class="stocks-hero-content">
+            <h1><i class="fas fa-chart-line me-2"></i>Thị trường chứng khoán</h1>
+            <div class="stocks-search-container">
+                <div class="search-box">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="stockSearch"
+                               placeholder="Nhập mã cổ phiếu (VD: VIC, VCB, AAPL, GOOGL)...">
+                        <button class="btn btn-primary" id="searchBtn">
+                            <i class="fas fa-search me-2"></i>Tìm kiếm
+                        </button>
+                    </div>
+                    <div class="search-hint">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>Ví dụ: VNINDEX, VIC, VCB, AAPL, MSFT, TSLA</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Market Statistics -->
+    <div class="market-stats">
+        <div class="stat-widget">
+            <div class="stat-value" id="totalMarkets">8</div>
+            <div class="stat-label">Chỉ số thị trường</div>
+        </div>
+        <div class="stat-widget">
+            <div class="stat-value" id="activeStocks">50+</div>
+            <div class="stat-label">Cổ phiếu theo dõi</div>
+        </div>
+        <div class="stat-widget">
+            <div class="stat-value" id="marketStatus">Mở</div>
+            <div class="stat-label">Trạng thái thị trường</div>
+        </div>
+        <div class="stat-widget">
+            <div class="stat-value" id="updateTime">--:--</div>
+            <div class="stat-label">Cập nhật lúc</div>
+        </div>
+    </div>
+
+    <!-- Chỉ số thị trường -->
+    <div class="indices-section">
+        <div class="section-header">
+            <h2><i class="fas fa-globe-americas"></i>Chỉ số thị trường toàn cầu</h2>
+            <button class="refresh-btn" id="refreshIndices">
+                <i class="fas fa-sync-alt me-2"></i>Làm mới
+            </button>
+        </div>
+        <div class="indices-grid" id="marketIndices">
+            <!-- Dữ liệu sẽ được tải ở đây -->
+        </div>
+    </div>
+
+    <!-- Kết quả tìm kiếm -->
+    <div class="stock-info-section" id="searchResultSection" style="display: none;">
+        <div class="section-header">
+            <h2><i class="fas fa-chart-bar"></i>Thông tin cổ phiếu</h2>
+            <button class="refresh-btn" id="refreshStock">
+                <i class="fas fa-redo me-2"></i>Cập nhật
+            </button>
+        </div>
+        <div id="stockInfo">
+            <!-- Thông tin cổ phiếu sẽ được hiển thị ở đây -->
+        </div>
+    </div>
+
+    <!-- Biểu đồ realtime -->
+<div id="realTimeChartSection">
+    <div class="realtime-chart-container">
+        <div class="realtime-chart-header">
+            <div class="realtime-chart-header-content">
+                <h3 class="chart-title">
+                    <i class="fas fa-bolt"></i>
+                    Biểu đồ thời gian thực
+                </h3>
+                <div class="chart-controls">
+                    <div class="timeframe-selector">
+                        <button class="timeframe-btn active" data-timeframe="1s">1s</button>
+                        <button class="timeframe-btn" data-timeframe="5s">5s</button>
+                        <button class="timeframe-btn" data-timeframe="30s">30s</button>
+                        <button class="timeframe-btn" data-timeframe="1m">1p</button>
+                        <button class="timeframe-btn" data-timeframe="5m">5p</button>
+                    </div>
+                    <div class="chart-status">
+                        <div class="live-indicator">
+                            <span class="live-dot"></span>
+                            <span>Live</span>
+                        </div>
+                        <span>•</span>
+                        <span>Cập nhật: <span id="updateFrequency">1s</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="realtime-chart-body">
+            <!-- Price Ticker -->
+            <div class="price-ticker" id="priceTicker" style="display: none;">
+                <div class="ticker-header">
+                    <div class="ticker-info">
+                        <span class="ticker-symbol" id="tickerSymbol">--</span>
+                        <span class="ticker-name" id="tickerName">--</span>
+                    </div>
+                    <div class="ticker-time">
+                        <i class="far fa-clock"></i>
+                        <span id="tickerTime">--:--:--</span>
+                    </div>
+                </div>
+                <div class="ticker-price-container">
+                    <div class="ticker-price" id="tickerPrice">-- ₫</div>
+                    <div class="ticker-change" id="tickerChange">
+                        <i class="fas fa-minus"></i>
+                        <span>0.00 (0.00%)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Chart -->
+            <div class="chart-wrapper">
+                <canvas id="realTimeChart"></canvas>
+            </div>
+
+            <!-- Order Book -->
+            <div class="order-book-section">
+                <h5><i class="fas fa-book me-2"></i>Sổ lệnh</h5>
+                <div class="order-book-container">
+                    <div class="order-book-column">
+                        <div class="order-book-header">
+                            <h6 class="order-book-title bid">
+                                <i class="fas fa-arrow-down"></i>
+                                Giá mua (Bid)
+                            </h6>
+                            <div class="order-book-stats">
+                                <span id="bidVolume">0</span> CP
+                            </div>
+                        </div>
+                        <div class="order-book-rows" id="bidOrders">
+                            <!-- Bid orders will be populated here -->
+                        </div>
+                    </div>
+
+                    <div class="order-book-column">
+                        <div class="order-book-header">
+                            <h6 class="order-book-title ask">
+                                <i class="fas fa-arrow-up"></i>
+                                Giá bán (Ask)
+                            </h6>
+                            <div class="order-book-stats">
+                                <span id="askVolume">0</span> CP
+                            </div>
+                        </div>
+                        <div class="order-book-rows" id="askOrders">
+                            <!-- Ask orders will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart Controls -->
+            <div class="chart-controls-row">
+                <div class="update-info">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Cập nhật mỗi: <span class="update-frequency" id="updateFrequencyText">1s</span></span>
+                </div>
+                <div class="chart-actions">
+                    <button class="chart-btn" id="pauseChart">
+                        <i class="fas fa-pause"></i>
+                        Tạm dừng
+                    </button>
+                    <button class="chart-btn primary" id="resumeChart" style="display: none;">
+                        <i class="fas fa-play"></i>
+                        Tiếp tục
+                    </button>
+                    <button class="chart-btn" id="resetChart">
+                        <i class="fas fa-redo"></i>
+                        Làm mới
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Top cổ phiếu -->
+    <div class="top-stocks-section">
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="stocks-table-container">
+                    <div class="table-header">
+                        <h3><i class="fas fa-arrow-up text-success"></i>Top tăng giá hôm nay</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table stocks-table" id="topGainers">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Mã CP</th>
+                                    <th scope="col">Tên công ty</th>
+                                    <th scope="col">Giá</th>
+                                    <th scope="col">Thay đổi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dữ liệu sẽ được tải bằng JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-4">
+                <div class="stocks-table-container">
+                    <div class="table-header">
+                        <h3><i class="fas fa-arrow-down text-danger"></i>Top giảm giá hôm nay</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table stocks-table" id="topLosers">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Mã CP</th>
+                                    <th scope="col">Tên công ty</th>
+                                    <th scope="col">Giá</th>
+                                    <th scope="col">Thay đổi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dữ liệu sẽ được tải bằng JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thông tin hướng dẫn -->
+    <div class="info-section-modern">
+        <div class="section-header">
+            <h2><i class="fas fa-lightbulb"></i>Công cụ đầu tư thông minh</h2>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="info-card">
+                    <i class="fas fa-bolt"></i>
+                    <h5>Tìm kiếm nhanh</h5>
+                    <p>Tìm kiếm thông tin cổ phiếu với dữ liệu thời gian thực và phân tích chi tiết.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="info-card">
+                    <i class="fas fa-chart-pie"></i>
+                    <h5>Theo dõi thị trường</h5>
+                    <p>Cập nhật liên tục các chỉ số thị trường và biến động giá toàn cầu.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="info-card">
+                    <i class="fas fa-bell"></i>
+                    <h5>Cảnh báo thông minh</h5>
+                    <p>Nhận thông báo khi cổ phiếu đạt ngưỡng giá hoặc có biến động quan trọng.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="alert alert-info mt-4" role="alert">
+        <div class="d-flex align-items-center">
+            <i class="fas fa-info-circle fa-2x me-3"></i>
+            <div>
+                <strong>Lưu ý:</strong> Dữ liệu được cung cấp chỉ mang tính chất tham khảo.
+                Các quyết định đầu tư nên được thực hiện dựa trên nghiên cứu kỹ lưỡng
+                và tư vấn từ chuyên gia tài chính.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block additional_js %}
+<script src="{{ url_for('static', filename='js/stocks.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/realtime-chart.js') }}"></script>
+{% endblock %}

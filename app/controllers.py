@@ -389,3 +389,209 @@ def get_top_losers():
 
     return jsonify({'success': True, 'losers': sample_losers})
 
+
+
+# ============ CHATBOT ============
+
+@app.route('/chatbot')
+@login_required
+def chatbot():
+    return render_template("chatbot.html")
+
+
+@app.route('/api/chat/conversations', methods=['GET'])
+@login_required
+def get_conversations():
+    """Get all conversations for the current user"""
+    conversations = ChatConversation.query.filter_by(
+        user_id=current_user.user_id
+    ).order_by(ChatConversation.updated_at.desc()).all()
+
+    return jsonify([{
+        'id': conv.conversation_id,
+        'title': conv.title,
+        'createdAt': conv.created_at.strftime('%d/%m/%Y %H:%M:%S'),
+        'updatedAt': conv.updated_at.strftime('%d/%m/%Y %H:%M:%S')
+    } for conv in conversations])
+
+
+@app.route('/api/chat/conversations', methods=['POST'])
+@login_required
+def create_conversation():
+    """Create a new conversation for the current user"""
+    data = request.get_json()
+    conversation = ChatConversation(
+        user_id=current_user.user_id,
+        title=data.get('title', 'Cuộc trò chuyện mới')
+    )
+    db.session.add(conversation)
+    db.session.commit()
+
+    return jsonify({
+        'id': conversation.conversation_id,
+        'title': conversation.title,
+        'createdAt': conversation.created_at.strftime('%d/%m/%Y %H:%M:%S'),
+        'updatedAt': conversation.updated_at.strftime('%d/%m/%Y %H:%M:%S')
+    }), 201
+
+
+@app.route('/api/chat/conversations/<int:conversation_id>/messages', methods=['GET'])
+@login_required
+def get_messages(conversation_id):
+    """Get all messages in a conversation (only if user owns it)"""
+    conversation = ChatConversation.query.filter_by(
+        conversation_id=conversation_id,
+        user_id=current_user.user_id
+    ).first()
+
+    if not conversation:
+        return jsonify({'error': 'Conversation not found or access denied'}), 404
+
+    messages = ChatMessage.query.filter_by(
+        conversation_id=conversation_id
+    ).order_by(ChatMessage.timestamp.asc()).all()
+
+    return jsonify([{
+        'id': msg.message_id,
+        'content': msg.content,
+        'type': msg.message_type,
+        'timestamp': msg.timestamp.strftime('%d/%m/%Y %H:%M:%S'),
+        'has_image': msg.has_image,
+        'image_url': msg.image_url,
+        'is_html': msg.is_html
+    } for msg in messages])
+
+
+@app.route('/api/chat/conversations/<int:conversation_id>/messages', methods=['POST'])
+@login_required
+def add_message(conversation_id):
+    """Add a message to a conversation (only if user owns it)"""
+    conversation = ChatConversation.query.filter_by(
+        conversation_id=conversation_id,
+        user_id=current_user.user_id
+    ).first()
+
+    if not conversation:
+        return jsonify({'error': 'Conversation not found or access denied'}), 404
+
+    data = request.get_json()
+    message = ChatMessage(
+        conversation_id=conversation_id,
+        user_id=current_user.user_id,
+        content=data.get('content'),
+        message_type=data.get('type', 'user')
+    )
+    db.session.add(message)
+    db.session.commit()
+
+    return jsonify({
+        'id': message.message_id,
+        'content': message.content,
+        'type': message.message_type,
+        'timestamp': message.timestamp.strftime('%d/%m/%Y %H:%M:%S')
+    }), 201
+
+
+@app.route('/api/chat/conversations/<int:conversation_id>', methods=['DELETE'])
+@login_required
+def delete_conversation(conversation_id):
+    """Delete a conversation (only if user owns it)"""
+    conversation = ChatConversation.query.filter_by(
+        conversation_id=conversation_id,
+        user_id=current_user.user_id
+    ).first()
+
+    if not conversation:
+        return jsonify({'error': 'Conversation not found or access denied'}), 404
+
+    db.session.delete(conversation)
+    db.session.commit()
+
+    return jsonify({'message': 'Conversation deleted'}), 200
+
+
+# ---------- RAG ONLY -------------
+
+@app.route('/api/chat/send-message', methods=['POST'])
+@login_required
+def send_chat_message():
+    """Handle chat messages for financial advisor (RAG only, no image)"""
+    try:
+        data = request.get_json()
+        message_text = data.get('message', '')
+        conversation_id = data.get('conversation_id')
+
+        # Validate input
+        if not message_text:
+            return jsonify({'error': 'Vui lòng nhập câu hỏi về tài chính'}), 400
+
+        # Tìm hoặc tạo conversation
+        if conversation_id:
+            conversation = ChatConversation.query.filter_by(
+                conversation_id=conversation_id,
+                user_id=current_user.user_id
+            ).first()
+            if not conversation:
+                return jsonify({'error': 'Cuộc trò chuyện không tồn tại'}), 404
+        else:
+            # Tạo conversation mới với title từ message đầu tiên
+            title = message_text[:50] + "..." if message_text else "Tư vấn tài chính"
+            conversation = ChatConversation(
+                user_id=current_user.user_id,
+                title=title
+            )
+            db.session.add(conversation)
+            db.session.flush()
+
+        # Lưu tin nhắn người dùng
+        user_message = ChatMessage(
+            conversation_id=conversation.conversation_id,
+            user_id=current_user.user_id,
+            content=message_text,
+            message_type='user'
+        )
+        db.session.add(user_message)
+        db.session.flush()
+
+        # Lấy response từ RAG
+        rag_response_content = ""
+        try:
+            rag_response = rag_chatbot.get_rag_response(message_text, conversation.conversation_id)
+            rag_response_content = rag_response
+        except Exception as e:
+            app.logger.error(f"RAG Error: {e}")
+            rag_response_content = "Xin lỗi, có lỗi xảy ra khi xử lý yêu cầu tài chính của bạn. Vui lòng thử lại."
+
+        # Lưu tin nhắn bot
+        bot_message = ChatMessage(
+            conversation_id=conversation.conversation_id,
+            user_id=current_user.user_id,
+            content=rag_response_content,
+            message_type='bot',
+            is_html=False
+        )
+        db.session.add(bot_message)
+
+        # Cập nhật thời gian conversation
+        conversation.updated_at = datetime.datetime.utcnow()
+
+        # Cập nhật tiêu đề nếu là tin nhắn đầu tiên
+        if len(conversation.messages) <= 2:  # Chỉ user và bot message
+            conversation.title = f"Tư vấn: {message_text[:30]}..." if len(
+                message_text) > 30 else f"Tư vấn: {message_text}"
+
+        db.session.commit()
+
+        return jsonify({
+            'success': True,
+            'conversation_id': conversation.conversation_id,
+            'response': rag_response_content
+        })
+
+    except Exception as e:
+        app.logger.error(f"Chat error: {e}")
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'error': 'Có lỗi xảy ra khi xử lý tin nhắn tài chính'
+        }), 500

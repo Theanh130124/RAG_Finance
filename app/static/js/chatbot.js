@@ -6,13 +6,11 @@ class Chatbot {
     this.apiBaseUrl = "/api/chat"
     this.currentConversationId = null
     this.conversations = []
-    this.currentImageData = null
 
     this.initializeElements()
     this.bindEvents()
     this.applyTheme()
     this.loadConversations()
-    this.setupImageUpload()
   }
 
   initializeElements() {
@@ -32,59 +30,6 @@ class Chatbot {
     }
   }
 
-setupImageUpload() {
-    // Create hidden file input
-    let fileInput = document.getElementById('image-upload')
-    if (!fileInput) {
-        fileInput = document.createElement('input')
-        fileInput.type = 'file'
-        fileInput.id = 'image-upload'
-        fileInput.accept = 'image/*'
-        fileInput.style.display = 'none'
-        document.body.appendChild(fileInput)
-    }
-
-    // Create image upload button - SỬA LẠI CÁCH THÊM NÚT
-    let uploadBtn = document.getElementById('image-upload-btn')
-    if (!uploadBtn) {
-        uploadBtn = document.createElement('button')
-        uploadBtn.type = 'button'
-        uploadBtn.id = 'image-upload-btn'
-        uploadBtn.className = 'image-upload-btn'
-        uploadBtn.title = 'Tải lên hình ảnh'
-        uploadBtn.innerHTML = '<i class="fas fa-camera"></i>'
-
-        const inputGroup = document.querySelector('.input-group')
-        if (inputGroup) {
-            // Thêm nút vào trước input
-            inputGroup.insertBefore(uploadBtn, inputGroup.firstChild)
-        }
-    }
-
-    // Create image preview container
-    let previewDiv = document.getElementById('image-preview')
-    if (!previewDiv) {
-        previewDiv = document.createElement('div')
-        previewDiv.id = 'image-preview'
-        previewDiv.className = 'image-preview-container'
-        previewDiv.style.display = 'none'
-        previewDiv.style.marginTop = '10px'
-
-        const inputContainer = document.querySelector('.chat-input-container')
-        if (inputContainer) {
-            // Thêm preview vào sau input group
-            const inputGroup = inputContainer.querySelector('.input-group')
-            if (inputGroup) {
-                inputContainer.insertBefore(previewDiv, inputGroup.nextSibling)
-            }
-        }
-    }
-
-    // Bind events
-    uploadBtn.addEventListener('click', () => fileInput.click())
-    fileInput.addEventListener('change', (e) => this.handleImageUpload(e))
-}
-
   bindEvents() {
     this.elements.sendButton.addEventListener("click", () => this.sendMessage())
     this.elements.chatInput.addEventListener("keypress", (e) => {
@@ -98,15 +43,6 @@ setupImageUpload() {
 
     if (this.elements.themeToggle) {
       this.elements.themeToggle.addEventListener("click", () => this.toggleTheme())
-    }
-
-    // Image upload events
-    const uploadBtn = document.getElementById('image-upload-btn')
-    const fileInput = document.getElementById('image-upload')
-
-    if (uploadBtn && fileInput) {
-      uploadBtn.addEventListener('click', () => fileInput.click())
-      fileInput.addEventListener('change', (e) => this.handleImageUpload(e))
     }
 
     if (this.elements.infoBtn) {
@@ -134,76 +70,16 @@ setupImageUpload() {
     })
   }
 
-  handleImageUpload(event) {
-    const file = event.target.files[0]
-    if (!file) return
-
-    // Validate file type
-    if (!file.type.match('image.*')) {
-      alert('Vui lòng chọn file hình ảnh (JPEG, PNG, etc.)')
-      return
-    }
-
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      alert('Kích thước file không được vượt quá 5MB')
-      return
-    }
-
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      this.currentImageData = e.target.result
-      this.showImagePreview(e.target.result)
-    }
-    reader.onerror = () => {
-      alert('Có lỗi xảy ra khi đọc file. Vui lòng thử lại.')
-    }
-    reader.readAsDataURL(file)
-  }
-
-  showImagePreview(imageData) {
-    const previewDiv = document.getElementById('image-preview')
-    if (!previewDiv) return
-
-    previewDiv.innerHTML = `
-      <div class="image-preview-container">
-        <img src="${imageData}" alt="Preview" class="img-thumbnail" style="max-width: 100px; max-height: 100px;">
-        <button type="button" class="btn-remove-image btn btn-sm btn-danger">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-    `
-    previewDiv.style.display = 'block'
-
-    // Add remove button event
-    const removeBtn = previewDiv.querySelector('.btn-remove-image')
-    if (removeBtn) {
-      removeBtn.addEventListener('click', () => this.clearImagePreview())
-    }
-  }
-
-  clearImagePreview() {
-    this.currentImageData = null
-    const previewDiv = document.getElementById('image-preview')
-    const fileInput = document.getElementById('image-upload')
-
-    if (previewDiv) {
-      previewDiv.style.display = 'none'
-      previewDiv.innerHTML = ''
-    }
-
-    if (fileInput) {
-      fileInput.value = ''
-    }
-  }
-
   handleSuggestion(topic) {
     const suggestions = {
-      acne: "Cách trị mụn trứng cá hiệu quả",
-      "dry-skin": "Chăm sóc da khô đúng cách",
-      allergy: "Xử lý dị ứng mỹ phẩm",
-      psoriasis: "Điều trị bệnh vảy nến",
-      sunscreen: "Sử dụng kem chống nắng hiệu quả"
+      saving: "Làm thế nào để tiết kiệm tiền hiệu quả?",
+      investment: "Đầu tư gì an toàn với số vốn nhỏ?",
+      stock: "Tôi nên bắt đầu đầu tư chứng khoán như thế nào?",
+      insurance: "Loại bảo hiểm nào cần thiết cho người trẻ?",
+      retirement: "Lập kế hoạch hưu trí từ tuổi 30",
+      budget: "Cách lập ngân sách chi tiêu hàng tháng",
+      debt: "Làm sao để trả nợ nhanh nhất?",
+      tax: "Cách tối ưu hóa thuế thu nhập cá nhân"
     }
 
     if (this.elements.chatInput) {
@@ -212,31 +88,31 @@ setupImageUpload() {
     }
   }
 
-async loadConversations() {
+  async loadConversations() {
     try {
-        const response = await fetch(`${this.apiBaseUrl}/conversations`)
-        if (!response.ok) throw new Error("Failed to load conversations")
+      const response = await fetch(`${this.apiBaseUrl}/conversations`)
+      if (!response.ok) throw new Error("Failed to load conversations")
 
-        this.conversations = await response.json()
+      this.conversations = await response.json()
 
-        // Display conversations in sidebar
-        if (this.elements.chatHistory) {
-            this.renderConversationsSidebar(this.conversations)
-        }
+      // Display conversations in sidebar
+      if (this.elements.chatHistory) {
+        this.renderConversationsSidebar(this.conversations)
+      }
 
-        // CHỈ load conversation đầu tiên nếu chưa có conversation hiện tại
-        if (this.conversations.length > 0 && !this.currentConversationId) {
-            await this.loadConversation(this.conversations[0].id)
-        } else if (this.conversations.length === 0 && !this.currentConversationId) {
-            await this.startNewConversation()
-        }
+      // CHỈ load conversation đầu tiên nếu chưa có conversation hiện tại
+      if (this.conversations.length > 0 && !this.currentConversationId) {
+        await this.loadConversation(this.conversations[0].id)
+      } else if (this.conversations.length === 0 && !this.currentConversationId) {
+        await this.startNewConversation()
+      }
     } catch (error) {
-        console.error("Error loading conversations:", error)
-        if (!this.currentConversationId) {
-            await this.startNewConversation()
-        }
+      console.error("Error loading conversations:", error)
+      if (!this.currentConversationId) {
+        await this.startNewConversation()
+      }
     }
-}
+  }
 
   renderConversationsSidebar(conversations) {
     const historyContainer = this.elements.chatHistory
@@ -246,7 +122,7 @@ async loadConversations() {
       historyContainer.innerHTML = `
         <div class="empty-state">
           <i class="fas fa-inbox"></i>
-          <p>Chưa có cuộc trò chuyện nào</p>
+          <p>Chưa có cuộc tư vấn nào</p>
         </div>
       `
       return
@@ -264,7 +140,7 @@ async loadConversations() {
               <div class="chat-item-title">${this.escapeHtml(conv.title)}</div>
               <div class="chat-item-time">${this.escapeHtml(conv.updatedAt)}</div>
             </div>
-            <button class="delete-conversation" data-id="${conv.id}" title="Xóa cuộc trò chuyện">
+            <button class="delete-conversation" data-id="${conv.id}" title="Xóa cuộc tư vấn">
               <i class="fas fa-times"></i>
             </button>
           </div>
@@ -293,7 +169,7 @@ async loadConversations() {
   }
 
   async deleteConversation(conversationId) {
-    if (!confirm('Bạn có chắc muốn xóa cuộc trò chuyện này?')) return
+    if (!confirm('Bạn có chắc muốn xóa cuộc tư vấn này?')) return
 
     try {
       const response = await fetch(`/api/chat/conversations/${conversationId}`, {
@@ -309,51 +185,50 @@ async loadConversations() {
       await this.loadConversations()
     } catch (error) {
       console.error('Error deleting conversation:', error)
-      alert('Có lỗi xảy ra khi xóa cuộc trò chuyện')
+      alert('Có lỗi xảy ra khi xóa cuộc tư vấn')
     }
   }
 
-async loadConversation(conversationId) {
+  async loadConversation(conversationId) {
     try {
-        this.currentConversationId = conversationId
-        const response = await fetch(`${this.apiBaseUrl}/conversations/${conversationId}/messages`)
-        if (!response.ok) throw new Error("Failed to load messages")
+      this.currentConversationId = conversationId
+      const response = await fetch(`${this.apiBaseUrl}/conversations/${conversationId}/messages`)
+      if (!response.ok) throw new Error("Failed to load messages")
 
-        const messages = await response.json()
+      const messages = await response.json()
 
-        if (this.elements.chatMessages) {
-            this.elements.chatMessages.innerHTML = ""
+      if (this.elements.chatMessages) {
+        this.elements.chatMessages.innerHTML = ""
 
-            // Display all messages với đầy đủ thông tin
-            messages.forEach((msg) => {
-                this.renderMessage({
-                    content: msg.content,
-                    type: msg.type,
-                    timestamp: msg.timestamp,
-                    image_url: msg.image_url,
-                    is_html: msg.is_html
-                })
-            })
+        // Display all messages
+        messages.forEach((msg) => {
+          this.renderMessage({
+            content: msg.content,
+            type: msg.type,
+            timestamp: msg.timestamp,
+            is_html: msg.is_html
+          })
+        })
 
-            this.scrollToBottom()
-            this.updateSidebarActiveState()
-        }
+        this.scrollToBottom()
+        this.updateSidebarActiveState()
+      }
     } catch (error) {
-        console.error("Error loading conversation:", error)
+      console.error("Error loading conversation:", error)
     }
-}
+  }
 
-updateSidebarActiveState() {
+  updateSidebarActiveState() {
     const items = document.querySelectorAll('.chat-item')
     items.forEach(item => {
-        const convId = item.getAttribute("data-conversation-id")
-        if (Number.parseInt(convId) === this.currentConversationId) {
-            item.classList.add('active')
-        } else {
-            item.classList.remove('active')
-        }
+      const convId = item.getAttribute("data-conversation-id")
+      if (Number.parseInt(convId) === this.currentConversationId) {
+        item.classList.add('active')
+      } else {
+        item.classList.remove('active')
+      }
     })
-}
+  }
 
   async startNewConversation() {
     try {
@@ -361,7 +236,7 @@ updateSidebarActiveState() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title: `Cuộc trò chuyện ${new Date().toLocaleString("vi-VN")}`,
+          title: `Tư vấn tài chính ${new Date().toLocaleString("vi-VN")}`,
         }),
       })
 
@@ -385,105 +260,75 @@ updateSidebarActiveState() {
     }
   }
 
-async sendMessage() {
+  async sendMessage() {
     const message = this.elements.chatInput?.value.trim() || ''
-    const imageData = this.currentImageData
 
-    if ((!message && !imageData) || this.isTyping) {
-        if (!message && !imageData) {
-            alert('Vui lòng nhập tin nhắn hoặc tải lên hình ảnh')
-        }
-        return
+    if (!message || this.isTyping) {
+      if (!message) {
+        alert('Vui lòng nhập câu hỏi về tài chính')
+      }
+      return
     }
 
     // Create conversation if not exists
     if (!this.currentConversationId) {
-        await this.startNewConversation()
+      await this.startNewConversation()
     }
 
-    // Hiển thị tin nhắn user ngay lập tức với ảnh preview
-    this.addMessageToUI(message, imageData, "user")
+    // Hiển thị tin nhắn user ngay lập tức
+    this.addMessageToUI(message, "user")
 
     if (this.elements.chatInput) {
-        this.elements.chatInput.value = ""
+      this.elements.chatInput.value = ""
     }
-
-    this.clearImagePreview()
 
     this.showTypingIndicator()
 
     try {
-        const response = await fetch('/api/chat/send-message', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                message: message,
-                image: imageData,
-                conversation_id: this.currentConversationId
-            })
+      const response = await fetch('/api/chat/send-message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: message,
+          conversation_id: this.currentConversationId
         })
+      })
 
-        const data = await response.json()
+      const data = await response.json()
 
-        if (data.success) {
-            this.hideTypingIndicator()
-
-            // Cập nhật tin nhắn user với URL ảnh thực từ server (nếu có)
-            if (data.image_url) {
-                const userMessages = document.querySelectorAll('.message.user')
-                const lastUserMessage = userMessages[userMessages.length - 1]
-                if (lastUserMessage) {
-                    const imgElement = lastUserMessage.querySelector('.chat-image-preview')
-                    if (imgElement && data.image_url) {
-                        imgElement.src = data.image_url
-                    }
-                }
-            }
-
-            // Xử lý response - KHÔNG có HTML lồng nhau
-            let responseContent = data.response
-
-            // Format response đẹp hơn nếu có cả CV và RAG
-            if (data.cv_prediction && data.response.includes(data.cv_prediction)) {
-                // Tách CV prediction và RAG response
-                const ragOnly = data.response.replace(data.cv_prediction, '').trim()
-                responseContent = `${data.cv_prediction}\n\n${ragOnly}`
-            }
-
-            this.addMessageToUI(responseContent, null, "bot")
-            await this.loadConversations()
-        } else {
-            throw new Error(data.error || 'Failed to get response')
-        }
-    } catch (error) {
+      if (data.success) {
         this.hideTypingIndicator()
-        const errorMsg = "Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại sau."
-        this.addMessageToUI(errorMsg, null, "bot")
-        console.error("Chatbot error:", error)
+        this.addMessageToUI(data.response, "bot")
+        await this.loadConversations()
+      } else {
+        throw new Error(data.error || 'Không thể nhận phản hồi')
+      }
+    } catch (error) {
+      this.hideTypingIndicator()
+      const errorMsg = "Xin lỗi, đã có lỗi xảy ra khi xử lý câu hỏi tài chính. Vui lòng thử lại sau."
+      this.addMessageToUI(errorMsg, "bot")
+      console.error("Chatbot error:", error)
     }
-}
+  }
 
-// Sửa hàm addMessageToUI trong chatbot.js
-addMessageToUI(content, imageData, type, imageUrl = null) {
+  addMessageToUI(content, type) {
     const timestamp = new Date().toLocaleTimeString("vi-VN", {
-        hour: "2-digit",
-        minute: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
     })
 
     this.renderMessage({
-        content,
-        imageData,
-        type,
-        timestamp,
-        image_url: imageUrl // Thêm image_url để hiển thị ảnh từ URL
+      content,
+      type,
+      timestamp
     })
 
     this.scrollToBottom()
-}
-// Sửa hàm renderMessage để hiển thị ảnh ngay lập tức
-renderMessage(message) {
+  }
+
+  renderMessage(message) {
     if (!this.elements.chatMessages) return
 
     const messageElement = document.createElement("div")
@@ -492,42 +337,32 @@ renderMessage(message) {
     let messageHTML = ''
 
     if (message.type === "user") {
-        // HIỂN THỊ ẢNH NGAY LẬP TỨC - cả base64 và URL
-        const imageDisplay = message.imageData ?
-            `<img src="${message.imageData}" class="chat-image-preview" alt="Hình ảnh đã tải lên" style="max-width: 200px; max-height: 200px; border-radius: 8px; margin-bottom: 8px;">` :
-            (message.image_url ?
-                `<img src="${message.image_url}" class="chat-image-preview" alt="Hình ảnh đã tải lên" style="max-width: 200px; max-height: 200px; border-radius: 8px; margin-bottom: 8px;">` :
-                '')
-
-        messageHTML = `
-            <div class="message-content">
-                ${imageDisplay}
-                ${message.content ? `<p>${this.formatMessageContent(message.content)}</p>` : ''}
-                <div class="message-time">${this.escapeHtml(message.timestamp)}</div>
-            </div>
-            <div class="message-avatar">
-                <i class="fas fa-user"></i>
-            </div>
-        `
+      messageHTML = `
+        <div class="message-content">
+          ${message.content ? `<p>${this.formatMessageContent(message.content)}</p>` : ''}
+          <div class="message-time">${this.escapeHtml(message.timestamp)}</div>
+        </div>
+        <div class="message-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+      `
     } else {
-        // Bot message - format plain text thành HTML đẹp
-        const content = this.formatMessageContent(message.content)
+      const content = this.formatMessageContent(message.content)
 
-        messageHTML = `
-            <div class="message-avatar">
-                <i class="fas fa-robot"></i>
-            </div>
-            <div class="message-content">
-                ${content}
-                <div class="message-time">${this.escapeHtml(message.timestamp)}</div>
-            </div>
-        `
+      messageHTML = `
+        <div class="message-avatar">
+          <i class="fas fa-robot"></i>
+        </div>
+        <div class="message-content">
+          ${content}
+          <div class="message-time">${this.escapeHtml(message.timestamp)}</div>
+        </div>
+      `
     }
 
     messageElement.innerHTML = messageHTML
     this.elements.chatMessages.appendChild(messageElement)
-}
-
+  }
 
   formatMessageContent(content) {
     if (!content) return ''
@@ -538,6 +373,8 @@ renderMessage(message) {
       .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
       .replace(/\*(.*?)\*/g, "<em>$1</em>")
       .replace(/`(.*?)`/g, "<code>$1</code>")
+      .replace(/- (.*?)(?=\n|$)/g, "<li>$1</li>")
+      .replace(/(<li>.*<\/li>)/g, "<ul>$1</ul>")
   }
 
   escapeHtml(unsafe) {
@@ -590,7 +427,7 @@ renderMessage(message) {
   }
 
   async clearCurrentChat() {
-    if (!confirm("Bạn có chắc muốn xóa cuộc trò chuyện hiện tại?")) return
+    if (!confirm("Bạn có chắc muốn xóa cuộc tư vấn hiện tại?")) return
 
     try {
       if (this.currentConversationId) {
@@ -610,12 +447,12 @@ renderMessage(message) {
       await this.startNewConversation()
     } catch (error) {
       console.error("Error deleting conversation:", error)
-      alert('Có lỗi xảy ra khi xóa cuộc trò chuyện')
+      alert('Có lỗi xảy ra khi xóa cuộc tư vấn')
     }
   }
 
   async clearAllHistory() {
-    if (!confirm("Bạn có chắc muốn xóa tất cả lịch sử trò chuyện? Hành động này không thể hoàn tác.")) return
+    if (!confirm("Bạn có chắc muốn xóa tất cả lịch sử tư vấn? Hành động này không thể hoàn tác.")) return
 
     try {
       // Delete all conversations
@@ -645,24 +482,28 @@ renderMessage(message) {
   addWelcomeMessage() {
     if (!this.elements.chatMessages) return
 
-    const welcomeMessage = `👋 **Xin chào! Tôi là chatbot tư vấn da liễu thông minh**
+    const welcomeMessage = `💰 **Xin chào! Tôi là chuyên gia tư vấn tài chính cá nhân** 👨‍💼
 
 Tôi có thể giúp bạn với các vấn đề về:
 
-🎯 **Phân tích hình ảnh** - Gửi ảnh để nhận chẩn đoán sơ bộ
-💊 **Tư vấn điều trị** - Mụn, nám, viêm da, dị ứng
-🌿 **Chăm sóc da** - Routine phù hợp với loại da
-⚠️ **Xử lý khẩn cấp** - Dị ứng, kích ứng da
-📋 **Kiến thức chuyên môn** - Dựa trên tài liệu y khoa
+📊 **Lập kế hoạch tài chính** - Ngân sách, tiết kiệm, đầu tư
+💹 **Đầu tư thông minh** - Chứng khoán, bất động sản, quỹ mở
+🏦 **Quản lý thu nhập** - Tối ưu hóa thu nhập, giảm thuế
+🛡️ **Bảo hiểm và rủi ro** - Bảo vệ tài chính gia đình
+🎯 **Mục tiêu tài chính** - Mua nhà, xe, du học, hưu trí
+📈 **Phân tích thị trường** - Xu hướng đầu tư hiện tại
 
-**Bạn có thể:**
-- Gửi hình ảnh da để phân tích AI
-- Mô tả triệu chứng để được tư vấn
-- Hỏi về bất kỳ vấn đề da liễu nào
+**Bạn có thể hỏi về:**
+- Cách tiết kiệm 20% thu nhập
+- Đầu tư an toàn với số vốn nhỏ
+- Lập kế hoạch hưu trí
+- Quản lý nợ hiệu quả
+- Tối ưu thuế thu nhập
+- Phân bổ tài sản hợp lý
 
-Hãy bắt đầu bằng cách gửi tin nhắn hoặc hình ảnh!`
+Hãy bắt đầu bằng cách hỏi bất kỳ câu hỏi tài chính nào! 💰`
 
-    this.addMessageToUI(welcomeMessage, null, "bot")
+    this.addMessageToUI(welcomeMessage, "bot")
   }
 
   toggleTheme() {
@@ -686,9 +527,9 @@ document.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
     try {
       window.chatbot = new Chatbot()
-      console.log('Chatbot initialized successfully')
+      console.log('Chatbot tài chính đã được khởi tạo thành công')
     } catch (error) {
-      console.error('Failed to initialize chatbot:', error)
+      console.error('Không thể khởi tạo chatbot:', error)
     }
   }, 100)
 })

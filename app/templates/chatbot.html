@@ -1,0 +1,174 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Chatbot Tư Vấn Tài Chính{% endblock %}
+
+{% block additional_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chatbot.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="chatbot-wrapper mt-4">
+    <!-- Chat History Sidebar -->
+    <aside class="chatbot-sidebar" id="chatbot-sidebar">
+        <div class="sidebar-header">
+            <h3 class="sidebar-title">
+                <i class="fas fa-history"></i>Lịch Sử Tư Vấn
+            </h3>
+        </div>
+
+        <div class="sidebar-content">
+            <div class="chat-history" id="chat-history">
+                <!-- Chat history will be populated here -->
+                <div class="empty-state">
+                    <i class="fas fa-comments"></i>
+                    <p>Chưa có cuộc tư vấn nào</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <button class="btn-clear-history" id="clear-history-btn" title="Xóa tất cả lịch sử">
+                <i class="fas fa-trash"></i>Xóa lịch sử
+            </button>
+            <button class="btn-new-chat" id="new-chat-btn" title="Tư vấn mới">
+                <i class="fas fa-plus"></i>Tư vấn mới
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Chat Area -->
+    <main class="chatbot-main">
+        <div class="chatbot-container">
+            <!-- Chat Header -->
+            <div class="chat-header">
+                <div class="chat-title">
+                    <i class="fas fa-chart-line"></i>
+                    <h2>Chuyên Gia Tư Vấn Tài Chính</h2>
+                    <span class="badge badge-beta">Pro</span>
+                </div>
+                <div class="chat-actions">
+                    <button class="action-btn" id="clear-chat" title="Xóa cuộc tư vấn hiện tại">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <button class="action-btn" id="info-btn" title="Thông tin">
+                        <i class="fas fa-info-circle"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Messages Area -->
+            <div class="chat-messages" id="chat-messages">
+                <div class="message bot">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <p><strong>Xin chào! 👋</strong></p>
+                        <p>Tôi là chuyên gia tư vấn tài chính cá nhân thông minh. Tôi có thể giúp bạn với:</p>
+                        <ul>
+                            <li>Lập kế hoạch tài chính cá nhân</li>
+                            <li>Tư vấn đầu tư thông minh</li>
+                            <li>Quản lý ngân sách và chi tiêu</li>
+                            <li>Lập kế hoạch hưu trí</li>
+                            <li>Tối ưu hóa thuế thu nhập</li>
+                            <li>Quản lý nợ và tín dụng</li>
+                        </ul>
+                        <p>Hãy chọn một chủ đề bên dưới hoặc đặt câu hỏi trực tiếp!</p>
+                        <div class="message-time">Bây giờ</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suggestions -->
+            <div class="suggestions-container" id="suggestions-container">
+                <div class="suggestions-label">Chủ đề tài chính phổ biến:</div>
+                <div class="suggestions" id="suggestions">
+                    <button class="suggestion-btn" data-topic="saving">
+                        <i class="fas fa-piggy-bank me-2"></i>Tiết kiệm hiệu quả
+                    </button>
+                    <button class="suggestion-btn" data-topic="investment">
+                        <i class="fas fa-chart-line me-2"></i>Đầu tư an toàn
+                    </button>
+                    <button class="suggestion-btn" data-topic="stock">
+                        <i class="fas fa-chart-bar me-2"></i>Đầu tư chứng khoán
+                    </button>
+                    <button class="suggestion-btn" data-topic="insurance">
+                        <i class="fas fa-shield-alt me-2"></i>Bảo hiểm cần thiết
+                    </button>
+                    <button class="suggestion-btn" data-topic="retirement">
+                        <i class="fas fa-umbrella-beach me-2"></i>Kế hoạch hưu trí
+                    </button>
+                    <button class="suggestion-btn" data-topic="budget">
+                        <i class="fas fa-calculator me-2"></i>Lập ngân sách
+                    </button>
+                    <button class="suggestion-btn" data-topic="debt">
+                        <i class="fas fa-credit-card me-2"></i>Quản lý nợ
+                    </button>
+                    <button class="suggestion-btn" data-topic="tax">
+                        <i class="fas fa-file-invoice-dollar me-2"></i>Tối ưu thuế
+                    </button>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="chat-input-container">
+                <div class="input-group">
+                    <input
+                        type="text"
+                        class="chat-input"
+                        id="chat-input"
+                        placeholder="Nhập câu hỏi tài chính của bạn..."
+                        autocomplete="off"
+                    >
+                    <button class="send-button" id="send-button" title="Gửi câu hỏi">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="input-hint">
+                    <small>💡 Ví dụ: "Làm sao để tiết kiệm 20% thu nhập hàng tháng?"</small>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Info Modal -->
+<div class="modal fade" id="infoModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-info-circle me-2"></i>Về Chuyên Gia Tài Chính
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Chuyên Gia Tư Vấn Tài Chính Thông Minh</strong></p>
+                <p>Đây là công cụ tư vấn tài chính cá nhân dựa trên trí tuệ nhân tạo và cơ sở tri thức tài chính.</p>
+                <div class="alert alert-info">
+                    <strong>⚠️ Lưu ý quan trọng:</strong>
+                    <ul>
+                        <li>Thông tin chỉ mang tính chất tham khảo và giáo dục</li>
+                        <li>Không phải lời khuyên đầu tư chính thức</li>
+                        <li>Luôn tham khảo chuyên gia tài chính trước khi đưa ra quyết định</li>
+                        <li>Hiệu quả đầu tư phụ thuộc vào nhiều yếu tố thị trường</li>
+                    </ul>
+                </div>
+                <p><strong>Phạm vi tư vấn:</strong></p>
+                <ul>
+                    <li>Lập kế hoạch tài chính cá nhân</li>
+                    <li>Quản lý ngân sách và chi tiêu</li>
+                    <li>Kiến thức đầu tư cơ bản</li>
+                    <li>Tối ưu thuế thu nhập</li>
+                    <li>Lập kế hoạch hưu trí</li>
+                    <li>Quản lý nợ và tín dụng</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block additional_js %}
+<script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+{% endblock %}

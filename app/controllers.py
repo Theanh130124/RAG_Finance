@@ -1,5 +1,6 @@
 import uuid
-import datetime
+from datetime import datetime
+
 import base64
 from flask import render_template, redirect, request, url_for, session, flash, jsonify
 from flask_login import current_user, logout_user, login_required, login_user
@@ -9,7 +10,7 @@ from app import app, flow
 from app.form import LoginForm, RegisterForm, ProfileForm, ChangePasswordForm
 from app.dao import dao_authen, dao_user
 from app.extensions import db
-# from app.rag_chatbot import rag_chatbot
+from app.rag_chatbot import rag_chatbot
 
 
 import google.oauth2.id_token
@@ -573,7 +574,7 @@ def send_chat_message():
         db.session.add(bot_message)
 
         # Cập nhật thời gian conversation
-        conversation.updated_at = datetime.datetime.utcnow()
+        conversation.updated_at = datetime.utcnow()
 
         # Cập nhật tiêu đề nếu là tin nhắn đầu tiên
         if len(conversation.messages) <= 2:  # Chỉ user và bot message

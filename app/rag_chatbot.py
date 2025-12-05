@@ -2,6 +2,7 @@ import os
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_qdrant import QdrantVectorStore
 from langchain_community.chat_models import ChatOpenAI
+#cài requirements rồi cài pip install langchain==0.3.27 cài về cái này
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
